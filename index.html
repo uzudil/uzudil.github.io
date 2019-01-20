@@ -1,0 +1,63 @@
+<html>
+<head>
+	<script src="turtle.js"></script>
+</head>
+<body>
+	<canvas id="view" width=1000 height=600 />
+	
+	<script>
+		const canvas = document.getElementById('view');
+
+		const turtle = new Turtle(canvas);
+		
+		function side(n) {
+			turtle.forward(n);
+			turtle.left(45);
+			turtle.forward(n);
+			turtle.right(90);
+			turtle.forward(n);
+			turtle.left(45);
+			turtle.forward(n);
+		}
+
+		function star(angle, mul, minSide, sideLength) {
+			if(!sideLength) sideLength = 25;
+			if(sideLength > minSide) {
+				for(let i = 0; i < 4; i++) {
+
+					// turn and draw a side
+					turtle.right(90);
+					side(sideLength);
+
+					// remember our position
+					let pos = turtle.getPos();
+
+					// recurse and draw again, but scaled down
+					let key = Math.round(pos[0]) + "." + Math.round(pos[1]);
+					if(!seen[key]) {
+						seen[key] = pos;
+						turtle.left(angle);
+						star(angle, mul, minSide, sideLength * mul)
+
+						// return to our saved position
+						turtle.setPos(pos);
+					}
+				}	
+			}
+		}
+
+		function fractal(x, y, angle, mul, minSide) {
+			turtle.x = x;
+			turtle.y = y;
+			turtle.penDown = true;
+			seen = {};		
+			star(angle, mul, minSide);
+		}
+
+		fractal(200, 200, 180, 0.5, 0.5);
+		fractal(500, 200, 160, 0.55, 1);
+		fractal(200, 500, 145, 0.75, 15);
+		fractal(500, 500, 90, 0.5, 1);
+	</script>
+</body>
+</html>
